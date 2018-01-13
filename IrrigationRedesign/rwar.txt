@@ -1,0 +1,7 @@
+public class RedirecActionExample extends ActionSupport {
+HttpServletResponse response=(HttpServletResponse) ActionContext.getContext().get(ServletActionContext.HTTP_RESPONSE);
+
+    url="http://localhost:8080/SpRoom-1.0-SNAPSHOT/"+date;
+    response.sendRedirect(url);
+    return super.execute(); 
+}

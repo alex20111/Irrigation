@@ -1,0 +1,13 @@
+.alert .glyphicon{
+    display:table-cell;
+}
+.alert .fa{
+    display:table-cell;
+}
+
+.alert i,
+.alert div,
+.alert span{
+    padding-left: 5px;
+    display:table-cell;
+}

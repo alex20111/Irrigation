@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" 
+   "http://struts.apache.org/dtds/struts-2.0.dtd"> 
+   
+  <struts>  
+    <constant name="struts.devMode" value="false" />  
+    
+    <constant name="struts.multipart.maxSize" value="20000000" />
+    
+    <!--
+		Enable/Disable Dynamic Method Invocation.
+		Struts has it on by default, but disable it due to security concerns.
+	-->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+     <!--
+		Enable/Disable Mapper Action Prefix.
+		Struts has it off by default, but enable it for the s:submit button.
+	-->
+	<constant name="struts.mapper.action.prefix.enabled" value="true" />
+     
+    <package name="main" namespace="/" extends="json-default,struts-default">
+    
+		<!-- 
+			Declare our interceptors
+		 -->
+		<interceptors>		
+			<!-- Declare the login interceptor -->
+			<interceptor name="login" class="net.project.web.interceptors.LoginInterceptor"/>
+			
+			<!-- 
+				Add the login interceptor to the default stack.	We want it first, so that we can check if the user is
+				logged in before processing the action.
+			 -->
+			<interceptor-stack name="defaultLoginStack">
+				<interceptor-ref name="login"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
+		</interceptors>
+
+	<default-interceptor-ref name="defaultLoginStack"></default-interceptor-ref>
+	
+		<global-results>        	
+             <result name="login" type="redirectAction">
+            	<param name="actionName">displayLogin</param>
+            </result>
+            <result name="accessdenied" >/jsp/accessDenied.jsp</result>
+            <result name="error">/jsp/error404.jsp</result>
+        </global-results>
+
+	<!--  ERRORS  
+    	<global-exception-mappings>			
+			<exception-mapping exception="java.lang.Throwable" result="error" />
+		</global-exception-mappings> --> 
+
+		<action name="displayLogin" class="net.project.web.action.LoginAction" method="loadLoginPage">  
+       	  <interceptor-ref name="defaultStack" />
+			<result name="success" >/jsp/login.jsp</result>
+		</action>
+		
+	<!-- Global action  -->
+		<action name="" >  
+			<result name="success" type="redirectAction">
+				<param name="actionName">${#application.callAction}</param>
+			</result>
+        </action>		
+		
+	<!-- LOGIN -->	
+		<action name="logOut" class="net.project.web.action.LoginAction" method="logout">  
+       	  <interceptor-ref name="defaultStack" />
+			<result name="success" type="redirectAction">
+				<param name="actionName">${#application.callAction}</param>
+			</result>
+        </action>		
+        
+        <action name="loginUser" class="net.project.web.action.LoginAction" method="login">  
+      	    <result name="loggedIn" type="redirectAction">
+            	<param name="actionName">mainPageAction</param>
+             </result>
+       	 	 <result name="login">/jsp/login.jsp</result>
+        </action>   
+        
+         <action name="changepassword">  
+       	  <result name="success">/jsp/changePassword.jsp</result>
+        </action>
+        
+        <action name="savepassword" class="net.project.web.action.LoginAction" method="changePass">
+          <interceptor-ref name="tokenSession"/>
+          <interceptor-ref name="defaultLoginStack"/>   
+       	  <result name="success">/jsp/changePassword.jsp</result>
+       	  <result name="input">/jsp/changePassword.jsp</result>
+       	  <result name="invalid.token">/jsp/changePassword.jsp</result>
+        </action>
+        
+        <!--  main page -->
+        <action name="mainPageAction" class="net.project.web.action.MainPageAction" method="loadMainPageInformation">  
+       	  <result name="success">/jsp/mainPage.jsp</result>
+       	  <result name="error" type="redirectAction">
+            	<param name="actionName">displayLogin</param>
+             </result>
+        </action>
+        
+        <action name="waterOnOff" class="net.project.web.action.MainPageAction" method="turnWaterOnOff">  
+			<result name="success" type="stream">
+  				<param name="contentType">text/html</param>
+				 <param name="inputName">waterStream</param>
+				 <param name="bufferSize">1024</param>
+			</result>
+        </action>
+        <action name="unattatchedWorkers" class="net.project.web.action.MainPageAction" method="unmanagedWorkers">  
+			<result name="success" type="stream">
+  				<param name="contentType">text/html</param>
+				 <param name="inputName">unmanagedStream</param>
+				 <param name="bufferSize">1024</param>
+			</result>
+        </action>
+        
+        <action name="workerStatusDisplay" class="net.project.web.action.MainPageAction" method="displayCurrentWorkerStatus">  
+			<result name="success" type="stream">
+  				<param name="contentType">text/html</param>
+				 <param name="inputName">workerStatusTxt</param>
+				 <param name="bufferSize">1024</param>
+			</result>
+        </action>  
+        
+        
+        <!-- User access and updates -->
+        <action name="addEditUser" class="net.project.web.action.UserAction" method="loadAddEditUser">            
+       	  <result name="success">/jsp/addEditUser.jsp</result>
+       	  <result name="input">/jsp/addEditUser.jsp</result>
+        </action>
+        
+        <action name="saveUser" class="net.project.web.action.UserAction" method="saveUserInformation"> 
+          <interceptor-ref name="tokenSession"/>
+          <interceptor-ref name="defaultLoginStack"/>   
+       	  <result name="success">/jsp/addEditUser.jsp</result>
+       	  <result name="input">/jsp/addEditUser.jsp</result>       	  
+       	  <result name="invalid.token">/jsp/addEditUser.jsp</result>
+        </action>
+        
+        <action name="userList" class="net.project.web.action.UserAction" method="loadAllUsers">  
+       	  <result name="success">/jsp/listUsers.jsp</result>
+       	  <result name="input">/jsp/listUsers.jsp</result>
+        </action>
+        
+        <action name="deleteUser" class="net.project.web.action.UserAction" method="deleteUser">  
+       	  <result name="success">/jsp/listUsers.jsp</result>
+       	  <result name="input">/jsp/listUsers.jsp</result>
+        </action>
+        <action name="blockUnBlockUser" class="net.project.web.action.UserAction" method="restoreDenyAccess">  
+       	  <result name="success">/jsp/listUsers.jsp</result>
+       	  <result name="input">/jsp/listUsers.jsp</result>
+        </action>
+        
+        
+        <!-- logs -->
+        <action name="loadLogs" class="net.project.web.action.LogFileAction" method="loadLogs">  
+       	  <result name="success">/jsp/logsView.jsp</result>
+       	  <result name="input">/jsp/logsView.jsp</result>
+        </action>
+        
+        <action name="showLog" class="net.project.web.action.LogFileAction" method="showLogFile">  
+       	  <result name="success">/jsp/logsView.jsp</result>
+       	  <result name="input">/jsp/logsView.jsp</result>
+        </action>       
+        
+        <!--  Server Options/Config -->
+         <action name="displayOptions" class="net.project.web.action.ServerOptionsAction" method="loadOptions">  
+       	  <result name="options">/jsp/options.jsp</result>
+       	  <result name="config">/jsp/config.jsp</result>
+       	  <result name="notification">/jsp/notification.jsp</result>
+        </action> 
+        
+        <action name="saveOptions" class="net.project.web.action.ServerOptionsAction" method="saveServerOptions">
+          <interceptor-ref name="tokenSession"/>
+          <interceptor-ref name="defaultLoginStack"/>    
+       	  <result name="success">/jsp/options.jsp</result>
+       	  <result name="input">/jsp/options.jsp</result>
+       	  <result name="restartStop" type="stream">
+  				<param name="contentType">text/html</param>
+				 <param name="inputName">serverStream</param>
+				 <param name="bufferSize">1024</param>
+			</result>
+			 <result name="invalid.token">/jsp/options.jsp</result>
+        </action>
+        
+        <action name="updateSoftware" class="net.project.web.action.ServerOptionsAction" method="updateServerSoftware">
+       	  <result name="success">/jsp/softUpdate.jsp</result>
+       	  <result name="input">/jsp/softUpdate.jsp</result>
+       	  <result name="displaySoftUpdatePage">/jsp/softUpdate.jsp</result>
+        </action>
+        
+        <action name="saveConfiguration" class="net.project.web.action.ServerOptionsAction" method="saveConfig">
+       	  <result name="success">/jsp/config.jsp</result>
+       	  <result name="input">/jsp/config.jsp</result>
+        </action>
+        
+         <action name="saveNotification" class="net.project.web.action.ServerOptionsAction" method="saveNotification">
+       	  <result name="success">/jsp/notification.jsp</result>
+       	  <result name="input">/jsp/notification.jsp</result>
+
+        </action>
+        
+       
+       <!--  worker -->
+        <action name="manageWorkers" class="net.project.web.action.WorkerAction" method="listWorkers">  
+       	  <result name="success">/jsp/listWorker.jsp</result>
+       	  <result name="input">/jsp/listWorker.jsp</result>
+        </action>
+        
+        <action name="modifyWorker" class="net.project.web.action.WorkerAction" method="manageWorker">  
+       	  <result name="success">/jsp/editWorker.jsp</result>
+       	  <result name="input">/jsp/editWorker.jsp</result>
+        </action>
+        
+        <action name="updateWorker" class="net.project.web.action.WorkerAction" method="saveWorker">  
+          <interceptor-ref name="tokenSession"/>
+          <interceptor-ref name="defaultLoginStack"/>  
+       	  <result name="success">/jsp/editWorker.jsp</result>
+       	  <result name="input">/jsp/editWorker.jsp</result>
+       	  <result name="invalid.token">/jsp/editWorker.jsp</result>
+        </action>
+       
+       <action name="schedule" class="net.project.web.action.WorkerAction" method="startStopSchedule">  
+       	  <result name="success">/jsp/listWorker.jsp</result>
+       	  <result name="input">/jsp/listWorker.jsp</result>
+        </action>
+       
+       <action name="delete" class="net.project.web.action.WorkerAction" method="deleteWorker">  
+       	  <result name="success">/jsp/listWorker.jsp</result>
+       	  <result name="input">/jsp/listWorker.jsp</result>
+        </action>
+        
+        <action name="refresh" class="net.project.web.action.MainPageAction" method="refreshWorkers">  
+       	  <result name="success">/jsp/mainPage.jsp</result>
+       	  <result name="input">/jsp/mainPage.jsp</result>
+        </action>
+        
+       
+       <!--  events action  -->
+       <action name="loadEvents" class="net.project.web.action.EventsAction" method="listEvents">  
+       	  <result name="success">/jsp/events.jsp</result>
+       	  <result name="input">/jsp/events.jsp</result>
+        </action>
+        
+        <action name="eventAjax" class="net.project.web.action.MainPageAction" method="detectNewEvent">  
+			<result name="success" type="json">            
+            	<param name="noCache">true</param>
+            	<param name="root">events</param>
+            </result>
+        </action>  
+        
+        <!--  chart action -->
+        
+        <action name="loadChart" class="net.project.web.action.ChartAction" method="loadChartsAndStatus">  
+       	  <result name="success">/jsp/chart.jsp</result>
+       	  <result name="input">/jsp/chart.jsp</result>
+        </action>
+        
+        <!--  Weather -->
+        <action name="loadWeatherListPage" class="net.project.web.action.WeatherAction" method="loadWeatherInformation">  
+       	  <result name="success">/jsp/weather.jsp</result>
+       	  <result name="input">/jsp/weather.jsp</result>
+        </action>
+        
+        <action name="saveWeather" class="net.project.web.action.WeatherAction" method="saveWeatherOptions">  
+       	  <result name="success">/jsp/weather.jsp</result>
+       	  <result name="input">/jsp/weather.jsp</result>
+        </action>
+        
+        <action name="fetchLocations" class="net.project.web.action.WeatherAction" method="getWeatherLocation">  
+			<result name="success" type="json">            
+            	<param name="noCache">true</param>
+            	<param name="root">cities</param>
+            </result>
+        </action>
+        
+     </package>
+  </struts> 

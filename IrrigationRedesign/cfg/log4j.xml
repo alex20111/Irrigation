@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+	<!-- FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL 
+	 -->
+	
+	<!-- Standard Console appender -->
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender" >
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout" >
+			<param name="ConversionPattern" value="%-5p [%d{ISO8601}] [%t] %c (%F:%L) - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+	</appender>	
+
+	<appender name="FILE-DEBUG" class="org.apache.log4j.DailyRollingFileAppender" >
+		<param name="file" value="./server/logs/DEBUG.log"/>
+		<param name="DatePattern" value="yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout" >
+			<param name="ConversionPattern" value="%-5p [%d{ISO8601}] [%t] %c (%F:%L) - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="DEBUG"/>
+        </filter>
+	</appender>
+
+	<appender name="FILE-INFO" class="org.apache.log4j.DailyRollingFileAppender" >
+		<param name="file" value="./server/logs/INFO.log"/>
+		<param name="DatePattern" value="yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout" >
+			<param name="ConversionPattern" value="%-5p [%d{ISO8601}] [%t] %c (%F:%L) - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="INFO"/>
+        </filter>
+	</appender>	
+
+	<appender name="FILE-ERROR" class="org.apache.log4j.DailyRollingFileAppender" >
+		<param name="file" value="./server/logs/ERROR.log"/>
+		<param name="DatePattern" value="yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout" >
+			<param name="ConversionPattern" value="%-5p [%d{ISO8601}] [%t] %c (%F:%L) - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="WARN"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+	</appender>
+	
+	<!--					-->
+	<!-- Define the loggers	-->
+	<!-- 					-->
+	
+	<!-- Main Logger -->
+	<logger name="net.project" >
+		<!-- <level value="INFO" /> -->
+		 <level value="DEBUG" /> <!--  controlled in the startupManager -->
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE-INFO" />
+		<appender-ref ref="FILE-DEBUG" />
+	</logger>
+	
+	<!-- server Logger -->
+	<logger name="net.web.server" >
+		<level value="DEBUG" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE-INFO" />
+	</logger>
+	
+	
+	<!-- JSPs -->
+    <logger name="jsp_servlet">
+        <level value="WARN"/>
+        <appender-ref ref="FILE-ERROR" />
+    </logger>
+	
+	<!-- API (Apache/Struts) Logger -->
+	<logger name="org.apache">
+		<level value="WARN" />
+		<appender-ref ref="FILE-ERROR" />
+	</logger>
+	
+	<logger name="org.hibernate">
+		<level value="WARN" />
+		<appender-ref ref="FILE-ERROR" />
+	</logger>
+	
+	<logger name="com.opensymphony">
+		<level value="WARN" />
+		<appender-ref ref="FILE-ERROR" />
+	</logger>
+	
+	<logger name="freemarker">
+		<level value="WARN" />
+		<appender-ref ref="FILE-ERROR" />
+	</logger>
+	
+	<!-- Root Logger -->
+	<root>
+		<level value="ERROR" />
+		<appender-ref ref="FILE-ERROR" />
+	</root>
+	
+</log4j:configuration>

@@ -1,0 +1,333 @@
+<project name="RMS" default="build" basedir=".">
+
+	<!--
+		A build to build a stand alone project without the need to depploy it into a web server. it contain it's own web server.
+		java -jar name.war
+	-->
+	<target name="init"	description="Sets the timestamp properties,	creates the neccessary directories
+						and sets the compile classpath" >	
+		<echo message="Using Java Version: ${java.version}"/>
+		
+		<!-- Make sure the required properties are set -->
+		<fail message="Missing 'basedir' property. Please set this property and re-run." unless="basedir" />		
+		
+		<!-- When building a "production" version, change this property in the build.properties file -->
+		<property name="version" value="Non-Official"/>
+		
+		<property name="debug" value="on"/>
+		
+		<!-- Set the properties -->
+		<property name="lib" value="${basedir}/lib"/>
+		<property name="src" value="${basedir}/src"/>
+		<property name="cfg" value="${basedir}/cfg"/>
+		<property name="web" value="${basedir}/web"/>
+		<property name="build" value="${basedir}/build"/>
+		<property name="classes" value="${build}/classes"/>    	
+		<property name="warfile" value="WebServer.war" />
+		<property name="dist" value="${basedir}/dist"/>
+		<property name="metainf" value="${web}/META-INF"/>
+		<property name="webinf" value="${web}/WEB-INF"/>	
+		<property name="webinf.build" value="${build}/WEB-INF"/>
+		<property name="images" value="${web}/images"/>
+		<property name="js" value="${web}/js"/>
+		<property name="fonts" value="${web}/fonts"/>
+		<property name="css" value="${web}/css"/>
+		
+		<!-- embedded web server info -->
+		<property name="jarName" value="webserver.jar"/>
+		<property name="libFolder" value="webserver_lib"/>
+	
+		<!-- java compiler info -->
+		<property name="compiler" value="C:\Program Files\Java\jdk1.8.0_51\bin\javac.exe"/>
+		
+		<!-- Set the classpath that will be used to compile the source files -->
+		<path id="compile-classpath">
+			<fileset dir="${lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>		
+		
+		<!-- clean the dist and build dir -->
+		<delete dir="${build}" verbose="true" />
+		<delete dir="${dist}" verbose="true" />
+		
+		<!-- Timestamp to track when the project was built -->
+		<tstamp>
+			<format property="buildtime" pattern="yyyy-MM-dd HH:mm:ss"/>
+		</tstamp>
+		
+		<!-- Create required directories -->
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${build}"/>
+		<mkdir dir="${classes}"/>	
+	</target>		
+	
+	<!--
+		Compile the project
+	-->
+	<target name="compile" depends="init">
+		<javac	destdir="${classes}"
+				debug="${debug}"
+				fork="yes"
+				source="1.7"
+				target="1.7"
+				executable="${compiler}"
+				compiler="javac1.7"
+				deprecation="true">
+			<src path="${src}" />
+			
+			<!-- Exclude any classes
+			<exclude name="ca/gc/cra/cjnr/rms/tests/**/*.java"/> -->
+			
+			<classpath refid="compile-classpath"/>
+		</javac>
+	</target>
+		
+	<!--
+		Package up the web-app into a WAR
+	-->
+	<target name="war" depends="compile">
+		
+		<!-- Create the required directories -->
+		<mkdir dir="${webinf.build}"/>
+		
+		<delete dir="${dist}/${libFolder}"/>
+		<mkdir dir="${dist}/${libFolder}"/>	 
+			
+		<!-- copy lib to web lib folder -->
+		<copy todir="${dist}/${libFolder}" >  
+			<fileset dir="${lib}" >
+		       	<include name="jetty-io*.jar"/>
+		       	<include name="jetty-http-*.jar"/>
+		       	<include name="jetty-schemas-*.jar"/>
+		       	<include name="jetty-server-*.jar"/>
+		       	<include name="jetty-util-*.jar"/>
+		       	<include name="jetty-xml-*.jar"/>
+		       	<include name="servlet-api-*.jar"/>
+		       	<include name="org.eclipse.*.jar"/>
+		       	<include name="org.mortbay.jasper*.jar"/>
+		       	<include name="jetty-security-*.jar"/>
+		       	<include name="jetty-webapp-*.jar"/>
+		       	<include name="jetty-jmx-*.jar"/>
+		       	<include name="jetty-servlet-*.jar"/>
+		       	<include name="asm-*.jar"/>
+		       	<include name="javax.annotation*.jar"/>
+		       	<include name="jetty-annotations-*.jar"/>
+		       	<include name="jetty-plus-*.jar"/>
+				<include name="Utils1-1.jar"/>				
+				<include name="commons-configuration-1.10.jar"/>
+				<include name="commons-lang-2.6.jar"/>
+				<include name="commons-logging-1.1.3.jar"/>
+				<include name="commons-logging-api-1.1.jar"/>
+				<include name="log4j-1.2.14.jar"/>
+				<include name="javax.mail.jar"/>
+				<include name="h2-1.4.190.jar"/>
+				<include name="jdom.jar"/>
+				<include name="gson-2.2.4.jar"/>
+				<include name="jsoup-1.7.3.jar"/>
+				<include name="rome-1.0.jar"/>
+				<include name="commons-codec-1.10.jar"/>
+				<include name="commons-exec-1.3.jar"/>
+			</fileset>
+		 </copy>
+
+		<!-- copy configuration file -->
+		<copy file="${cfg}/WebConfig.ini" todir="${dist}"/>
+		
+		<manifestclasspath property="jar.classpath" jarfile="${dist}/${jarName}">
+			<classpath>
+				<fileset  dir="${dist}/${libFolder}" includes="*.jar"/>
+			</classpath>
+		</manifestclasspath>
+		
+		<!-- Create the WAR -->
+		<war update="true" destfile="${dist}/${warfile}" webxml="${webinf}/web.xml">
+			<!-- Copy over the web pages and their related files -->
+			<zipfileset prefix="jsp" dir="${web}">
+				<include name="**/*.html" />
+				<include name="**/*.jsp" />
+			</zipfileset>
+			
+			<!-- Copy over the img files -->
+			<zipfileset prefix="images" dir="${images}">
+				<include name="**/*.gif" />
+				<include name="**/*.jpg" />
+				<include name="**/*.png" />
+				<include name="**/*.ico" />
+			</zipfileset>
+			
+			<!-- Copy over the javascript files -->
+			<zipfileset prefix="js" dir="${js}">
+				<include name="**/*.js" />
+			</zipfileset>
+			
+			<!-- Copy over the fonts files -->
+			<zipfileset prefix="fonts" dir="${fonts}">
+				<include name="**/*.eot" />
+				<include name="**/*.woff" />
+				<include name="**/*.ttf" />
+				<include name="**/*.otf" />
+				<include name="**/*.woff2" />
+				<include name="**/*.svg" />
+			</zipfileset>
+			<!-- Copy over the css files -->
+			<zipfileset prefix="css" dir="${css}">
+				<include name="**/*.css" />
+			</zipfileset>
+			
+			<!-- Add the required lib files to the 'lib' folder -->
+			<lib dir="${lib}">
+				
+				<include name="freemarker-2.3.19.jar"/>
+				<include name="ognl-3.0.6.jar"/>
+				<include name="struts2-core-2.3.16.jar"/>
+				<include name="xwork-core-2.3.16.jar"/>
+				<include name="commons-io-2.0.1.jar"/>
+				<include name="commons-lang3-3.1.jar"/>
+				<include name="commons-fileupload-1.3.jar"/>
+				<include name="javassist-3.11.0.GA.jar"/>				
+				<include name="struts2-jquery-plugin-3.7.1.jar"/>
+				<include name="pi4j-core.jar"/>
+				<include name="struts2-json-plugin-2.3.16.jar"/>
+				<include name="WeatherApi.jar"/>	
+				
+				
+			</lib>
+			
+			<!-- 
+				Create the WEB-INF directory. We exclude the 'web.xml' file because
+				it's already included in the 'war' task declaration.
+			 -->
+			<webinf dir="${webinf.build}">
+			</webinf>
+			
+			<!-- Copy over the classes -->
+			<classes dir="${classes}">
+				<include name="net/project/**/*.class"/>
+			</classes>
+			
+			<!-- Copy over the struts config -->
+			<classes dir="${cfg}">
+				<include name="struts.xml"/>
+			</classes>	
+			
+			<!-- Copy over the log4j file -->
+			<zipfileset  dir="${cfg}">
+				<include name="**/log4j.xml" />
+			</zipfileset>
+			
+					
+			<manifest>
+				<attribute name="Main-Class" value="net.web.server.JettyServer"/>
+				<attribute name="Class-Path" value="${jar.classpath}"/>
+			</manifest>	
+			
+			<!-- Copy over the Jetty server file -->
+			<zipfileset dir="${basedir}/bin">
+				<include name="net/web/server/**/*.class"/>
+			</zipfileset>			
+		</war>
+	</target>
+	
+	<target name="build" depends="war" >
+		<echo>
+			Build finished
+		</echo>	
+	</target>
+	
+	
+			
+	<!-- <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
+	        classpath="C:/jboss/test/ant" onerror="report"/> 
+	 
+	    <target name="hello" depends="war">  
+	    	
+	        <one-jar destfile="${dist}/${jarName}"  >
+	           	<manifest>
+	        	      <attribute name="One-Jar-Main-Class" value="net.web.server.JettyServer"/>
+	        	</manifest>
+	            <main>
+
+	                <fileset dir="${basedir}/bin">
+	            		<include name="net/web/server/**/*.class"/>
+	                </fileset>
+	            </main>
+	            <lib>	               
+	            	<fileset dir="${lib}" >
+	            		 	       	<include name="jetty-io*.jar"/>
+	            		 	       	<include name="jetty-http-*.jar"/>
+	            		 	       	<include name="jetty-schemas-*.jar"/>
+	            		 	       	<include name="jetty-server-*.jar"/>
+	            		 	       	<include name="jetty-util-*.jar"/>
+	            		 	       	<include name="jetty-xml-*.jar"/>
+	            		 	       	<include name="servlet-api-*.jar"/>
+	            		 	       	<include name="org.eclipse.jetty*.jar"/>
+	            		 	       	<include name="org.mortbay.jasper*.jar"/>
+	            		 	       	<include name="jetty-security-*.jar"/>
+	            		 	       	<include name="jetty-webapp-*.jar"/>
+	            		 	       	<include name="jetty-jmx-*.jar"/>
+	            		 	       	<include name="jetty-servlet-*.jar"/>
+	            		 	       	<include name="asm-*.jar"/>
+	            		 	       	<include name="javax.annotation*.jar"/>
+	            		 	       	<include name="jetty-annotations-*.jar"/>
+	            		 	       	<include name="jetty-plus-*.jar"/>	 	        	
+	            		 		</fileset>	                	
+	            </lib>
+	       	<fileset dir="${dist}" >
+	        		<include name="webB.war"/>
+	        		</fileset>
+	        </one-jar>
+	        <echo>
+	          Now you can run the Hello One-JAR example using 
+	          $ java -jar hello.jar
+	        </echo>   
+	           
+	    </target> 
+	    
+	    	<delete dir="${dist}/${libFolder}"/>
+		<mkdir dir="${dist}/${libFolder}"/>	 
+	 	
+	 	<copy todir="${dist}/${libFolder}" >  
+	 		<fileset dir="${lib}" >
+	 	       	<include name="jetty-io*.jar"/>
+	 	       	<include name="jetty-http-*.jar"/>
+	 	       	<include name="jetty-schemas-*.jar"/>
+	 	       	<include name="jetty-server-*.jar"/>
+	 	       	<include name="jetty-util-*.jar"/>
+	 	       	<include name="jetty-xml-*.jar"/>
+	 	       	<include name="servlet-api-*.jar"/>
+	 	       	<include name="org.eclipse.jetty*.jar"/>
+	 	       	<include name="org.mortbay.jasper*.jar"/>
+	 	       	<include name="jetty-security-*.jar"/>
+	 	       	<include name="jetty-webapp-*.jar"/>
+	 	       	<include name="jetty-jmx-*.jar"/>
+	 	       	<include name="jetty-servlet-*.jar"/>
+	 	       	<include name="asm-*.jar"/>
+	 	       	<include name="javax.annotation*.jar"/>
+	 	       	<include name="jetty-annotations-*.jar"/>
+	 	       	<include name="jetty-plus-*.jar"/>	 	        	
+	 		</fileset>
+	 	 </copy>
+
+
+	 	<copy file="${cfg}/WebConfig.ini" todir="${dist}"/>
+	 	
+	 	<manifestclasspath property="jar.classpath" jarfile="${dist}/${jarName}">
+	 		<classpath>
+	 			<fileset  dir="${dist}/${libFolder}" includes="*.jar"/>
+	  		</classpath>
+		</manifestclasspath>
+	 		 	
+	 	<jar destfile="${dist}/${jarName}" basedir="${basedir}/bin" >	 		        	
+	 		<manifest>
+	 			<attribute name="Main-Class" value="net.web.server.JettyServer"/>
+	 			<attribute name="Class-Path" value="${jar.classpath}"/>
+	 		</manifest>	       	
+	 			        	
+	 		<include name="net/web/server/**/*.class"/>
+	 			        	
+	    </jar>
+	    
+	    -->
+	
+</project>

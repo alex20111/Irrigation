@@ -1,0 +1,145 @@
+Command structure: (NEW)
+
+
+-Start end command
+z = Start
+e = end
+
+- send or confirm command
+s = sending
+c = confirmation from worker
+
+-action command
+ - from PI
+  o = open water
+  a = close water
+  g = get sensore info
+  p = Save Power
+
+ - from ard (worker)
+  i = worker self identified
+  m = worker turned on water manually
+  w = worker turned off water manually
+  r = Rain, did not turn on.
+  d = Woke up from power down
+  b = Low battery
+
+
+From PI:
+pos 0 = always start
+pos 1 = Action command
+pos 2 = Sending/Confirm code 
+pos 3,4,5 = Worker identifier
+pos 6 = min to water if turning water on
+pos 7 = min to water if turning water on
+pos 8 =  min to water if turning water on
+pos 9 = END
+
+Command:
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
+
+z o s 0 0 0 9 9 9 e	//Open water
+z a s 0 0 0 e		//close water
+z g s 0 0 0 e		//get sensor info     
+z i c 0 0 0 9 9 9 9 9  9  9  9  9  9  9  9  e //Confirm self indentification with date and time. Ex: 170526111212 = 2017-05-26 11:12.12
+z p s 0 0 0 9 9 9 9 e	//power down with wake up hour minute
+
+---------------------------------------
+
+
+From WORKER:
+pos 0 = always start
+pos 1 = Action command
+pos 2 = Sending/Confirm code 
+pos 3,4,5 = Worker identifier
+pos 6 = LDR info 
+pos 7 = Rain sensor 
+pos 8 = Water on/ off 
+pos 9 = battery percent
+pos 10 = battery percent
+pos 11 = END
+
+Command:
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+
+z i s 0 0 0 9 9 9 9 9  e //Worker self identified.
+z o c 0 0 0 9 9 9 9 9 e //confirmation of opening water with sensor data
+z a c 0 0 0 9 9 9 9 9 e //confirmation of turning off water with sensor data
+z g c 0 0 0 9 9 9 9 9 e //return sensor data
+z i s 0 0 0 9 9 9 9 9 e //Worker self identified.
+z m s 0 0 0 9 9 9 9 9 e //worker turned on water manually
+z w s 0 0 0 9 9 9 9 9 e //worker turned off water manually
+z r s 0 0 0 9 9 9 9 9 e //Rain, did not turn on.
+z d s 0 0 0 9 9 9 9 9 e //woke up from pwoer down
+z b s 0 0 0 9 9 9 9 9 e //Battery low (below 10%).
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+Command structure: (OLD)
+
+-Start end command
+z = Start
+e = end
+
+- send or confirm command
+s = sending
+c = confirmation from worker
+
+-action command
+ - from PI
+  o = open water
+  a = close water
+  g = get sensore info
+
+ - from ard (worker)
+  i = worker self identified
+  m = worker turned on water manually
+  w = worker turned off water manually
+  r = Rain, did not turn on.
+
+
+From PI:
+pos 0 = always start
+pos 1 = Action command
+pos 2 = Sending/Confirm code 
+pos 3 = Random letter
+pos 4,5,6 = Worker identifier
+pos 7 = min to water if turning water on
+pos 8 = min to water if turning water on
+pos 9 =  min to water if turning water on
+pos 10 = END
+
+Command:
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+
+z o s x 0 0 0 9 9 9 e	//Open water
+z a s x 0 0 0 e		//close water
+z g s x 0 0 0 e		//get sensor info     
+
+---------------------------------------
+
+
+From WORKER:
+pos 0 = always start
+pos 1 = Action command
+pos 2 = Sending/Confirm code 
+pos 3 = Random letter
+pos 4,5,6 = Worker identifier
+pos 7 = LDR info 
+pos 8 = Rain sensor 
+pos 9 = Water on/ off 
+pos 10 = battery percent
+pos 11 = END
+
+Command:
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+
+z i s x 0 0 0 9 9 9 9  e //Worker self identified.
+z o c x 0 0 0 9 9 9 9  e //confirmation of opening water with sensor data
+z a c x 0 0 0 9 9 9 9  e //confirmation of turning off water with sensor data
+z g c x 0 0 0 9 9 9 9  e //return sensor data
+z i s x 0 0 0 9 9 9 9  e //Worker self identified.
+z m s x 0 0 0 9 9 9 9  e //worker turned on water manually
+z w s x 0 0 0 9 9 9 9  e //worker turned off water manually
+z r s x 0 0 0 9 9 9 9  e //Rain, did not turn on.

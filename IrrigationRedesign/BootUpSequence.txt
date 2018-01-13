@@ -1,0 +1,31 @@
+Start: 
+
+Green Led 	= On
+Blue Led	= ON
+
+Delay 1s
+
+--> send message to identify
+
+Blue Led	= Off
+
+
+Waiting for signal
+
+Blue Led	= On //on signal or timeout.
+
+Delay 1s
+
+Blue Led	= Off
+
+If everything ok, blink  Greeen led fast, then Steady green.
+Else blink blue led fast
+
+Else timeout-- > restart sequence  
+Else timeout nbr retry excedded -- > Blink both blue and greed led.
+
+
+
+
+
+00641722

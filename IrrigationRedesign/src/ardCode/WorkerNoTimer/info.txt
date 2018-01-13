@@ -1,0 +1,3 @@
+Worker No Timer Only.
+
+Contains LCD. made to be powered up by mains..

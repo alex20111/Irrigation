@@ -1,0 +1,7 @@
+This worker works with batteries, no timer and no LCD.
+
+Water will turn on until turned off by controller or button.
+
+green led (solid)---- on..
+green led (blinking)---- searching for controller
+blue led --- water on..
