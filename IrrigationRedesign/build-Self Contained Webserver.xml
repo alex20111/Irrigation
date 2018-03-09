@@ -128,6 +128,7 @@
 				<include name="rome-1.0.jar"/>
 				<include name="commons-codec-1.10.jar"/>
 				<include name="commons-exec-1.3.jar"/>
+				<include name="WeatherApi.jar"/>	
 			</fileset>
 		 </copy>
 
@@ -188,9 +189,7 @@
 				<include name="javassist-3.11.0.GA.jar"/>				
 				<include name="struts2-jquery-plugin-3.7.1.jar"/>
 				<include name="pi4j-core.jar"/>
-				<include name="struts2-json-plugin-2.3.16.jar"/>
-				<include name="WeatherApi.jar"/>	
-				
+				<include name="struts2-json-plugin-2.3.16.jar"/>				
 				
 			</lib>
 			
