@@ -29,11 +29,11 @@ public class WeatherManager {
 		sql = new WeatherSql();
 	}
 	
-	public Weather loadWeatherInformation(boolean loadWorkers) throws SQLException{
+	public Weather loadWeatherInformation(boolean loadWorkers) throws SQLException, ClassNotFoundException{
 		return sql.loadWeatherInformation(loadWorkers);		
 	}
 	
-	public void addWeatherInfo(Weather weather, List<WeatherWorker> weatherWks)  throws SQLException, ValidationException{
+	public void addWeatherInfo(Weather weather, List<WeatherWorker> weatherWks)  throws SQLException, ValidationException, ClassNotFoundException{
 		
 		//verify that we hav all the data.
 		if (weatherWks != null && weatherWks.size() > 0){
@@ -53,8 +53,9 @@ public class WeatherManager {
 	 * @param weatherWks - If null , only the weather entity will be updated. 
 	 * 					 	if not null, the the weatherworkers will be processed.
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public void updateWeather(Weather weather, List<WeatherWorker> weatherWks) throws SQLException{
+	public void updateWeather(Weather weather, List<WeatherWorker> weatherWks) throws SQLException, ClassNotFoundException{
 		
 		if (weatherWks != null){ //only compare when we have a non null list. If list is null only update the weather
 
@@ -147,7 +148,7 @@ public class WeatherManager {
 
 		return wth;
 	}
-	public List<WeatherWorker> loadAllWeatherWorkers(int weatherId) throws SQLException{
+	public List<WeatherWorker> loadAllWeatherWorkers(int weatherId) throws SQLException, ClassNotFoundException{
 		return sql.loadAllWeatherWorkers(weatherId);
 	}
 	/**
@@ -157,8 +158,9 @@ public class WeatherManager {
 	 * 
 	 * @return not null if active
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public Weather weatherActive() throws SQLException{
+	public Weather weatherActive() throws SQLException, ClassNotFoundException{
 		return sql.weatherActive();
 	}
 }

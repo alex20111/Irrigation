@@ -108,7 +108,7 @@
 									
 					<div class="panel panel-primary">
                         <div class="panel-heading">
-                           <h3> Power saving<span class="fa fa-info-circle" style="cursor:pointer;color:#337a9f" onclick="toggleHelpText('powerSaveHelpId')" ></span> </h3>
+                           <h3> Power saving<span class="fa fa-info-circle" style="cursor:pointer;color:#E1E147" onclick="toggleHelpText('powerSaveHelpId')" ></span> </h3>
                         </div>
                         <div class="panel-body">	
 							<p class="help-block" style="display:none" id="powerSaveHelpId">

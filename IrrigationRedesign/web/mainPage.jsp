@@ -93,8 +93,9 @@
                       <div id="result<s:property value='%{#status.index}'/>" >  <%-- Result can be refresh by ajax. is loaded from the ResultBuilder.java--%>
 						<s:property value="resultBody"   escapeHtml="false"/>
 					  </div>	
-                       	 
-                       	<s:if test="#session.user.canModify()">
+					  
+				                       	 
+                       	<s:if test="#session.user.canModify() && !status.sleeping">
 	                       	 <div class="row">
 									<div class="col-xs-12 ">
 										<div style="margin-right: 15px; margin-bottom: 40px"> 								
@@ -171,8 +172,6 @@
     		  $("#demo"+idx).addClass("closed"); 
     	  }
     	  
-    	  console.log("closed: " + isClosed);
-    	  
     	  if (isClosed){	    
     		  
     		  loadStatusForWorker(workId, idx);
@@ -194,7 +193,6 @@
     	    	   $("#resultWsId"+idx).html(data);
     	    	   
     	    	   $("#resultWsId"+idx).show();
-    	    	   console.log(data);
     	    	   
     	       }
     	       

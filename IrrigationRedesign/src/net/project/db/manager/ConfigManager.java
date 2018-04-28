@@ -14,12 +14,12 @@ public class ConfigManager {
 		sql = new ConfigSql();
 	}
 	
-	public Config loadConfig() throws SQLException{	
+	public Config loadConfig() throws SQLException, ClassNotFoundException{	
 		
 		return sql.loadConfig();
 	}
 	
-	public void updateConfig(Config cfg) throws ValidationException, SQLException{
+	public void updateConfig(Config cfg) throws ValidationException, SQLException, ClassNotFoundException{
 		
 		if (cfg == null){
 			throw new ValidationException("Config is null in updateConfig");

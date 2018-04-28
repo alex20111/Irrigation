@@ -49,6 +49,11 @@ public class StartUpManager implements ServletContextListener    {
 		try
 		{
 			log.debug("Starting app");
+			//Set database variables
+			Constants.url = System.getProperty("DB_URL");
+			Constants.dbUser = System.getProperty("DB_USERNAME"); 
+			Constants.dbPassword = System.getProperty("DB_PASS");			
+			
 			//create new tables if needed
 			CreateTables.createTables();
 

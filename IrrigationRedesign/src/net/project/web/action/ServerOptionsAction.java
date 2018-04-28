@@ -252,7 +252,7 @@ public class ServerOptionsAction extends ActionSupport implements SessionAware,A
 				}			
 			}
 
-			List<Worker> toUpdate = new ArrayList<Worker>();
+			List<Worker> toUpdatePS = new ArrayList<Worker>();
 			WorkerManager wm = null;
 			//power saving workers.
 			if (workers != null && !workers.isEmpty()){
@@ -260,23 +260,31 @@ public class ServerOptionsAction extends ActionSupport implements SessionAware,A
 				List<Worker> powerSavingWorker = wm.loadAllWorkers(true, false, false);
 				//get power saving workers
 				for(Worker worker : workers){
+					log.debug("Power saving Update: " + worker.getStartSleepTime() + " Stop: " + worker.getStopSleepTime());
 					//find it in the full list
 					for(Worker fullWorker: powerSavingWorker){
 						if (worker.getWorkId().equals(fullWorker.getWorkId())){
 							
-							if (worker.getStartSleepTime() > 0 && worker.getStopSleepTime() > 0 && worker.getStartSleepTime() != worker.getStopSleepTime() ){							
+							if ( (worker.getStartSleepTime() > 0 && worker.getStopSleepTime() > 0 && worker.getStartSleepTime() != worker.getStopSleepTime() )
+									|| (worker.getStartSleepTime() == -1 && worker.getStopSleepTime() == -1)){							 //TODO test reset sleep
 								fullWorker.setStartSleepTime(worker.getStartSleepTime());
 								fullWorker.setStopSleepTime(worker.getStopSleepTime());
-								toUpdate.add(fullWorker);
+								toUpdatePS.add(fullWorker);
 							}
-							else if(worker.getStartSleepTime() > 0 && worker.getStopSleepTime() > 0){
-								addActionError("Time problem with Worker: " + fullWorker.getName() + ". Time cannot be Equals or Start /Stop time is empty");
+							else if( (worker.getStartSleepTime() > 0 && worker.getStopSleepTime() > 0 ) || 
+									(worker.getStartSleepTime() == -1  && worker.getStopSleepTime() > 0) || //TODO test when one is on Select time and the other one is not. 
+									 (worker.getStartSleepTime() > 0 && worker.getStopSleepTime() == -1)){
+								
+								
+								
+								addActionError("Time problem with Worker: " + fullWorker.getName() + ". Time cannot be Equals or both start and stop time needs to be on 'Select time' to reset");
 							}
+							
 							break;
 						}
 					}		
 				}	
-				log.debug("Updating workers in config --->: " +toUpdate );
+				log.debug("Updating workers in config for power saving --->: " +toUpdatePS );
 			}
 			
 			if(!hasActionErrors() && !hasFieldErrors()){
@@ -300,9 +308,10 @@ public class ServerOptionsAction extends ActionSupport implements SessionAware,A
 				
 				mngr.updateConfig(oldCfg);
 				
-				//save worker list if any
-				if (!toUpdate.isEmpty() && wm != null){
-					for(Worker w: toUpdate){
+				//save worker list if any for power saving mode
+				//if wm is null this means we don't have any active power saving workers
+				if (!toUpdatePS.isEmpty() && wm != null){
+					for(Worker w: toUpdatePS){
 						wm.updateWorker(w, false);
 					}
 				}

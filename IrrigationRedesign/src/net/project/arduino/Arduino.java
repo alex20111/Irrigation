@@ -238,7 +238,7 @@ public class Arduino {
 
 		return returnData;			
 	}
-	private static synchronized void processSerialData(String dataReceived) throws IllegalStateException, IOException, ValidationException, InterruptedException, SQLException{
+	private static synchronized void processSerialData(String dataReceived) throws IllegalStateException, IOException, ValidationException, InterruptedException, SQLException, ClassNotFoundException{
 
 		Config cfg = null;	
 
@@ -341,7 +341,6 @@ public class Arduino {
 			}
 		}
 		else if (commandData.lowBattery()){
-			//if the water is turned off automatically or manually by the worker.
 			log.debug("low batt: " + commandData.getWorkerId());
 			//register it to the DB								
 			Worker dbw = sql.loadWorkerById(commandData.getWorkerId(), true, false);
@@ -369,7 +368,6 @@ public class Arduino {
 			}
 		}
 		else if (commandData.wakingUp()){
-			//if the water is turned on manually on the worker side
 			log.debug("Worker woke up: " + commandData.getWorkerId());
 			//register it to the DB								
 			Worker dbw = sql.loadWorkerById(commandData.getWorkerId(), true, false);
@@ -383,7 +381,7 @@ public class Arduino {
 		}
 
 	}
-	private static void updStatus(Worker dbw, boolean watering, Cmd commandData, String comment ) throws SQLException, ValidationException{
+	private static void updStatus(Worker dbw, boolean watering, Cmd commandData, String comment ) throws SQLException, ValidationException, ClassNotFoundException{
 		//add the status
 		WorkerStatus status = dbw.getStatus();
 		status.setConnected(true); //

@@ -28,7 +28,7 @@ public class Worker {
 	private String description 		= "";
 	private SchedType schedType;
 	private String schedStartTime 	= "";
-	private Date nextWateringBySched;
+	private Date nextWateringBySched; //date containing the next watering scheduled
 	private int waterElapseTime 	= 5;
 	private boolean doNotWater 		= false;
 	private boolean managed			= false;
@@ -181,6 +181,11 @@ public class Worker {
 		builder.append(scheduleRunning);
 		builder.append(", nextWateringBySched=");
 		builder.append(nextWateringBySched);
+		builder.append(", startSleepTime=");
+		builder.append(startSleepTime);
+		builder.append(", stopSleepTime=");
+		builder.append(stopSleepTime);
+	
 		builder.append("]");
 		return builder.toString();
 	}

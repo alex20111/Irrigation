@@ -56,7 +56,7 @@ public class CheckWorkers implements Runnable {
 		jobDone = true;
 	}
 	
-	private void updateDb(Worker w, WorkerManager wm, String msg) throws SQLException, ValidationException{
+	private void updateDb(Worker w, WorkerManager wm, String msg) throws SQLException, ValidationException, ClassNotFoundException{
 		WorkerStatus ws = w.getStatus();
 		ws.setConnected(false);
 		ws.setRecordedDate(new Date());

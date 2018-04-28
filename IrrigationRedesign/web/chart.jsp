@@ -51,6 +51,7 @@
 						<th>Watering</th>
 						<th>Light Status</th>
 						<th>Weather</th>
+						<th>Power Saving</th>
 						<th>Battery Level</th>
 						<th>Water consumption</th>
 						<th>System comment</th>
@@ -64,6 +65,7 @@
 							<td><s:if test="workerWatering" > Yes </s:if> <s:else> No </s:else></td>
 							<td><s:property value="lightStatus"/></td>
 							<td><s:property value="rainStatus.getStatus()"/></td>
+							<td><s:if test="sleeping" > Yes </s:if> <s:else> No </s:else></td>
 							<td><s:property value="batteryLevel"/></td>
 							<td><s:property value="waterConsumption"/></td>
 							<td><s:property value="systemComment"/></td>

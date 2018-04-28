@@ -18,7 +18,7 @@ public class UserManager {
 		sql = new UserSql();
 	}
 	
-	public User loginUser(String userName, String password) throws ValidationException, SQLException{
+	public User loginUser(String userName, String password) throws ValidationException, SQLException, ClassNotFoundException{
 		
 		User user = null;
 		
@@ -59,29 +59,30 @@ public class UserManager {
 	 * Load all users from the database
 	 * @return
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public List<User> loadAllUsers() throws SQLException{
+	public List<User> loadAllUsers() throws SQLException, ClassNotFoundException{
 		return sql.loadAllUsers();
 	}
 	
-	public void updateUser(User user) throws SQLException{
+	public void updateUser(User user) throws SQLException, ClassNotFoundException{
 		if (user != null){
 			sql.updateUser(user);
 		}
 	}
 	
-	public User loadUserById(int id) throws SQLException{
+	public User loadUserById(int id) throws SQLException, ClassNotFoundException{
 		return sql.loadUserByid(id);
 	}
-	public void addUser(User user) throws SQLException{
+	public void addUser(User user) throws SQLException, ClassNotFoundException{
 		if (user != null){
 			sql.addUser(user);
 		}
 	}
-	public void deleteUser(int userId) throws SQLException{
+	public void deleteUser(int userId) throws SQLException, ClassNotFoundException{
 		sql.deleteUserByUser(userId);
 	}
-	public User loadUserByUserName(String userName) throws SQLException{
+	public User loadUserByUserName(String userName) throws SQLException, ClassNotFoundException{
 		return sql.loadUserByUserName(userName);
 	}
 	

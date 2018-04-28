@@ -121,7 +121,7 @@ public class CreateTables {
 	}
 	
 	@SuppressWarnings("unused")
-	private static void createTempWorkers(){
+	private static void createTempWorkers() throws ClassNotFoundException{
 		WorkerManager wm = new WorkerManager();
 		
 		

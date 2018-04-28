@@ -47,7 +47,7 @@ public class UserAction extends ActionSupport implements SessionAware{
 			else{
 				retVal = Constants.ACCESS_DENIED;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			addActionError("Error , please see logs ");
 			log.error("Error in loadAllUsers" , e);
 			Utils.sendErrorMessage(e); //send error message if requested.

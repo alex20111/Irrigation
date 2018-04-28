@@ -33,8 +33,9 @@ public class ArduinoManager {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 * @throws InterruptedException
+	 * @throws ClassNotFoundException 
 	 */
-	public Worker openWater(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException{
+	public Worker openWater(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException, ClassNotFoundException{
 
 		if (!worker.getStatus().isSleeping()){ 
 			if (!worker.isDoNotWater()){
@@ -96,7 +97,7 @@ public class ArduinoManager {
 		return null;
 	}
 
-	public Worker closeWater(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException{
+	public Worker closeWater(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException, ClassNotFoundException{
 
 		if (!worker.getStatus().isSleeping()){ 
 			if (!worker.isDoNotWater()){
@@ -141,7 +142,7 @@ public class ArduinoManager {
 		return null;
 	}
 
-	public boolean getSensorData(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException{
+	public boolean getSensorData(Worker worker) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException, ClassNotFoundException{
 
 		if (!worker.getStatus().isSleeping()){ 
 			Cmd cmdSend = new Cmd();
@@ -177,7 +178,7 @@ public class ArduinoManager {
 		return false;	
 	}
 
-	public void checkWorkerStatus(Worker worker, String msg) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException{
+	public void checkWorkerStatus(Worker worker, String msg) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException, ClassNotFoundException{
 
 		if (!worker.getStatus().isSleeping()){ //if not sleeping check.. 
 			Cmd cmdSend = new Cmd();
@@ -209,7 +210,7 @@ public class ArduinoManager {
 			}	
 		}
 	}
-	public void putWorkerToSleep(Worker worker, String msg) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException{
+	public void putWorkerToSleep(Worker worker, String msg) throws ValidationException, SQLException, IllegalStateException, IOException, InterruptedException, ClassNotFoundException{
 
 		if (!worker.getStatus().isSleeping()){ //if not sleeping put it to sleep 
 			Cmd cmdSend = new Cmd();
@@ -248,7 +249,7 @@ public class ArduinoManager {
 	
 	
 
-	private Worker updateWorkerStatus(Worker worker, Cmd cmdMsg, String msg) throws SQLException, ValidationException{
+	private Worker updateWorkerStatus(Worker worker, Cmd cmdMsg, String msg) throws SQLException, ValidationException, ClassNotFoundException{
 		WorkerStatus status = worker.getStatus();
 		status.setConnected(true);
 		status.setLightStatus(cmdMsg.getLight());

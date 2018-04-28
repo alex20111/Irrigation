@@ -331,12 +331,22 @@ public class MainPageAction extends ActionSupport implements SessionAware {
 
 					wssb.append("</table>");	
 				}else if (ws.isWorkerWatering()){
-					//watering 
-					Calendar endOfWatering = Calendar.getInstance();
-					endOfWatering.setTime(w.getNextWateringBySched());
-					endOfWatering.add(Calendar.MINUTE, w.getWaterElapseTime());	
 
-					long minRemainingMillis = endOfWatering.getTimeInMillis() - new Date().getTime();
+					long minRemainingMillis = 0l;
+					//verify if the schedule is set 
+
+					if (w.isScheduleRunning()){ //TODO work by elapse time to display correct time
+						//watering 
+						Calendar endOfWatering = Calendar.getInstance();
+						endOfWatering.setTime(w.getNextWateringBySched());
+						endOfWatering.add(Calendar.MINUTE, w.getWaterElapseTime());	
+
+						minRemainingMillis = endOfWatering.getTimeInMillis() - new Date().getTime();
+
+
+					}else{
+						minRemainingMillis = 59940000l;
+					}
 
 					if (minRemainingMillis > 0){
 
@@ -356,6 +366,7 @@ public class MainPageAction extends ActionSupport implements SessionAware {
 						wssb.append("</tr>");
 						wssb.append("</table>");
 					}
+
 				}
 
 				workerStatusTxt = new ByteArrayInputStream(wssb.toString().getBytes("UTF-8"));
@@ -374,8 +385,9 @@ public class MainPageAction extends ActionSupport implements SessionAware {
 	 * @param message
 	 * @throws SQLException
 	 * @throws ValidationException
+	 * @throws ClassNotFoundException 
 	 */
-	private void workerUpdateDb(Worker worker, String message) throws SQLException, ValidationException{
+	private void workerUpdateDb(Worker worker, String message) throws SQLException, ValidationException, ClassNotFoundException{
 		WorkerStatus ws = worker.getStatus();
 		ws.setConnected(false);
 		ws.setRecordedDate(new Date());

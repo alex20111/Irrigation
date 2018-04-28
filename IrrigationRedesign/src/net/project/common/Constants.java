@@ -1,6 +1,6 @@
 package net.project.common;
 
-
+import home.db.DbClass;
 
 public class Constants {
 
@@ -10,9 +10,10 @@ public class Constants {
 	
 	//DB
 //	public static final String url 		= "jdbc:h2:" + System.getProperty("base.dir") + "/db/testDB";
-	public static final String url 		= "jdbc:h2:./server/db/testDB;DB_CLOSE_ON_EXIT=FALSE";
-	public static final String dbUser 	= "dbadmin";
-	public static final String dbPassword = "123456";
+	public static String url 		= "jdbc:h2:./server/db/testDB;DB_CLOSE_ON_EXIT=FALSE";
+	public static final DbClass dbType  =  DbClass.H2;
+	public static String dbUser 	= "dbadmin";
+	public static String dbPassword = "123456";
 	
 	public static final String LIGHT_OVERRIDE = "lightsoverride";
 	public static final String HEATER_OVERRIDE = "heateroverride";

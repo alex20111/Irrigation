@@ -35,22 +35,23 @@ public class WorkerManager {
 	 * @throws SQLException
 	 * 
 	 * a unmanaged worker mesans that he self identified but we did not do anything with it yet!
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Worker> loadAllWorkers(boolean onlyManaged, boolean currStatus, boolean getWeather) throws SQLException{
+	public List<Worker> loadAllWorkers(boolean onlyManaged, boolean currStatus, boolean getWeather) throws SQLException, ClassNotFoundException{
 
 		List<Worker> workers = sql.loadAllWorkers(onlyManaged, currStatus, getWeather);		
 
 		return workers;
 	}
 
-	public List<Worker> loadAllUnmanagedWorkers() throws SQLException{
+	public List<Worker> loadAllUnmanagedWorkers() throws SQLException, ClassNotFoundException{
 
 		List<Worker> workers = sql.loadAllUnmanagedWorkers();		
 
 		return workers;
 	}
 	
-	public Worker loadWorkerById(String workerId, boolean currentStatus, boolean loadWeather) throws SQLException{
+	public Worker loadWorkerById(String workerId, boolean currentStatus, boolean loadWeather) throws SQLException, ClassNotFoundException{
 		Worker worker = null;
 
 		if (workerId != null && workerId.length() > 0){
@@ -60,7 +61,7 @@ public class WorkerManager {
 		return worker;
 	}
 
-	public void addWorker(Worker worker, boolean addStatus) throws SQLException, ValidationException{
+	public void addWorker(Worker worker, boolean addStatus) throws SQLException, ValidationException, ClassNotFoundException{
 
 		if (worker != null){
 			sql.addWorker(worker);
@@ -84,7 +85,7 @@ public class WorkerManager {
 		}
 	}
 
-	public void updateWorker(Worker worker, boolean addStatus) throws SQLException, ValidationException{
+	public void updateWorker(Worker worker, boolean addStatus) throws SQLException, ValidationException, ClassNotFoundException{
 
 		if (worker != null){
 			
@@ -112,7 +113,7 @@ public class WorkerManager {
 		}
 	}
 
-	public void deleteWorker(String workerId) throws SQLException{
+	public void deleteWorker(String workerId) throws SQLException, ClassNotFoundException{
 		if (workerId.length() > 0){
 			sql.deleteWorker(workerId);
 			
@@ -124,7 +125,7 @@ public class WorkerManager {
 			
 		}
 	}
-	public List<WorkerStatus> loadAllWorkersStatusById(String workerId, Date from, Date to) throws SQLException{
+	public List<WorkerStatus> loadAllWorkersStatusById(String workerId, Date from, Date to) throws SQLException, ClassNotFoundException{
 
 		List<WorkerStatus> workerStatus = sql.loadAllWorkerStatusById(workerId, from, to)	;		
 
@@ -137,8 +138,9 @@ public class WorkerManager {
 	 * @param toDate
 	 * @return
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Event> loadAllEventsByDate(String workerId , Date fromDate , Date toDate) throws SQLException{
+	public List<Event> loadAllEventsByDate(String workerId , Date fromDate , Date toDate) throws SQLException, ClassNotFoundException{
 		List<Event> events = new ArrayList<Event>();
 
 		if (fromDate != null && toDate != null){
@@ -161,7 +163,7 @@ public class WorkerManager {
 		return events;
 	}
 	
-	public WorkerStatus loadCurrentStatusByWorkerId(String workerId) throws SQLException{
+	public WorkerStatus loadCurrentStatusByWorkerId(String workerId) throws SQLException, ClassNotFoundException{
 		return sql.loadCurrentStatusByWorkerId(workerId, null);
 	}
 	/**
@@ -170,8 +172,9 @@ public class WorkerManager {
 	 * 
 	 * @return
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Worker> loadAllWorkersForPowerSaving() throws SQLException{
+	public List<Worker> loadAllWorkersForPowerSaving() throws SQLException, ClassNotFoundException{
 		return sql.loadAllWorkersForPowerSaving();
 	}
 	/**
@@ -179,8 +182,9 @@ public class WorkerManager {
 	 * @param time
 	 * @return
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Worker> loadPwrWrkByStarOrStopTime(int time) throws SQLException{
+	public List<Worker> loadPwrWrkByStarOrStopTime(int time) throws SQLException, ClassNotFoundException{
 		return sql.loadPwrWrkByStarOrStopTime(time);
 	}
 }

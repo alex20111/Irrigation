@@ -189,7 +189,8 @@
 				<include name="javassist-3.11.0.GA.jar"/>				
 				<include name="struts2-jquery-plugin-3.7.1.jar"/>
 				<include name="pi4j-core.jar"/>
-				<include name="struts2-json-plugin-2.3.16.jar"/>				
+				<include name="struts2-json-plugin-2.3.16.jar"/>	
+				
 				
 			</lib>
 			

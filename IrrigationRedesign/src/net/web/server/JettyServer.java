@@ -48,8 +48,10 @@ public class JettyServer {
 	public static String SERVER_PASS 	= "SERVER-PASS";
 	public static String LOGIN			= "FORCE-LOGIN";
 	public static String EMAIL_KEY	 	= "EMAILKEY";
-	
-	
+	public static String DB_URL	 	= "DB-URL";
+	public static String DB_USERNAME	 	= "DB-USERNAME";
+	public static String DB_PASS	 	= "DB-PASS";
+		
 	
 	private static Server server;
 	private static HttpConfiguration http_config;	
@@ -221,6 +223,19 @@ public class JettyServer {
 				System.setProperty("email_key", confProp.getString(EMAIL_KEY));
 			}
 			
+			if (confProp.getString(DB_URL) != null && confProp.getString(DB_URL).length() > 0){
+				System.setProperty("DB_URL", confProp.getString(DB_URL));
+			}
+			
+			if (confProp.getString(DB_USERNAME) != null && confProp.getString(DB_USERNAME).length() > 0){
+				System.setProperty("DB_USERNAME", confProp.getString(DB_USERNAME));
+			}
+			
+			if (confProp.getString(DB_PASS) != null && confProp.getString(DB_PASS).length() > 0){
+				System.setProperty("DB_PASS", confProp.getString(DB_PASS));
+			}
+			
+			
 
 			confProp.clear();
 			
@@ -299,6 +314,7 @@ public class JettyServer {
 		server.addConnector( https);	     
 	}
 	
+	@SuppressWarnings("unused")
 	private static void logging() throws IOException{
 		RolloverFileOutputStream os = new RolloverFileOutputStream("/server/yyyy_mm_dd_Server.log", false);
 		

@@ -120,14 +120,16 @@ public class SchedThread implements Runnable {
 		log.debug("Turning water on... " + new Date() + " Worker id: " + workerId + " Is override on? " + worker.isDoNotWater() + "  weather: " 
 				+ ( worker.getWeatherWrk() != null && worker.getWeatherWrk().isActive() ? " Weather active ": " Do not check weather" )) ;
 
-
+		//CHECK if we can water
+		//things that can prevent watering: Override - Power saving - Weather
+		
 		if (worker.isDoNotWater()){//check override			
 			log.info("tried to water but the override is on. Worker id: " + worker.getWorkId());
 			
 			water = false;
 			checkWorker("Override is on. No watering");
 		}else if (worker.getStatus().isSleeping()){
-			log.info("tried to water but the override is on. Worker id: " + worker.getWorkId());
+			log.info("tried to water but the worker is in power saving mode. Worker id: " + worker.getWorkId());
 			water = false;
 		}else if (worker.getWeatherWrk() != null && worker.getWeatherWrk().isActive()){ //check for weather activated.
 
@@ -213,7 +215,7 @@ public class SchedThread implements Runnable {
 
 	}
 	
-	private void checkWorker(String msg) throws SQLException, IllegalStateException, IOException, InterruptedException, ValidationException{
+	private void checkWorker(String msg) throws SQLException, IllegalStateException, IOException, InterruptedException, ValidationException, ClassNotFoundException{
 		//still go check on the worker to see what caused the water to turn off.(could have been done manually)
 		try{
 			amn.checkWorkerStatus(worker, msg);
@@ -229,7 +231,7 @@ public class SchedThread implements Runnable {
 		this.restart = restart;
 	}
 	
-	private void updateDb(String msg, boolean connected) throws SQLException, ValidationException{
+	private void updateDb(String msg, boolean connected) throws SQLException, ValidationException, ClassNotFoundException{
 		WorkerStatus ws = worker.getStatus();
 		ws.setConnected(connected);
 		ws.setRecordedDate(new Date());
